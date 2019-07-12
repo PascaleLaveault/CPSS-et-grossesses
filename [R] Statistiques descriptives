@@ -32,12 +32,10 @@ serv$Code.service<- paste(serv$Code.service, as.character(serv$No.épisode), as.
 table1<-subset(serv, select= c(Code.service, Qté.code.service,Cout.service))
 detach(serv)
 agg <- table1 %>% group_by(Code.service) %>% summarise(Qté.code.service = mean(Qté.code.service), Cout.service = sum(Cout.service))
-cout<-aggregate.data.frame(list(table1$Cout.service), by=list(table1$Code.service), sum )
-Qté<-aggregate.data.frame(list(table1$Qté.code.service), by=list(table1$Code.service), mean )
-
-# Factoriser les variables multithomiques
-# DRG.Desc<-factor(DRG.Desc)
-# Consultant.Speciality<-factor(Consultant.Speciality)
+#cout<-aggregate.data.frame(list(table1$Cout.service), by=list(table1$Code.service), sum )
+#Qté<-aggregate.data.frame(list(table1$Qté.code.service), by=list(table1$Code.service), mean 
+#-------------------------------------------------------------------------Recréer les numéros d'épisodes et les dates de début
+table2<-read.table(text = table1$code.service, sep = ";", as.is = TRUE)
 
 
 # stats.desc<-subset(patientes, select= c(Age.Labor, DRG.Desc, Consultant.Speciality, social, matériel))
