@@ -1,0 +1,45 @@
+###########################################################
+###Travail réalisé par Pascale Laveault-Allard
+### Dans le cadre du CDO-CPSS
+### Été 2019
+###########################################################
+###Indice de défavorisation sociale et matérielle et CPSS
+###########################################################
+###Codes de services
+#########################################################
+library(readr)
+library(psych)
+#-----------------------------------------------------------------------------------------------------------
+
+services<- read.csv('//swa054200232/Partage_fichiers/Analyse/CDO/p0104129/Requête_Pascale_Codes_services.csv')
+
+###Statistiques descriptives
+N<-nrow(services)
+attach(services)
+#------------------------------------------------------------------------------------------Ajouter 2 fausses colonnes de SSE
+services$social<-sample(1:5, N, replace=TRUE)
+services$matériel<-sample(1:5, N, replace=TRUE)
+serv<-subset(services, select= -c(Sexe, Age, Code.Postal, Date.de.naissance, Code.épisode, Cout.réel))
+detach(services)
+attach(serv)
+summary(Qté.code.service)
+Cout.service<-as.numeric(Cout.service)
+Cout.service[is.na(Cout.service)]<-0
+summary(Cout.service)
+serv$Code.service<- paste(serv$Code.service, as.character(serv$No.épisode), as.character(serv$Début.code.service),sep=";")
+
+#créer les tables à aggréger
+table1<-subset(serv, select= c(Code.service, Qté.code.service,Cout.service))
+detach(serv)
+agg <- table1 %>% group_by(Code.service) %>% summarise(Qté.code.service = mean(Qté.code.service), Cout.service = sum(Cout.service))
+cout<-aggregate.data.frame(list(table1$Cout.service), by=list(table1$Code.service), sum )
+Qté<-aggregate.data.frame(list(table1$Qté.code.service), by=list(table1$Code.service), mean )
+
+# Factoriser les variables multithomiques
+# DRG.Desc<-factor(DRG.Desc)
+# Consultant.Speciality<-factor(Consultant.Speciality)
+
+
+# stats.desc<-subset(patientes, select= c(Age.Labor, DRG.Desc, Consultant.Speciality, social, matériel))
+# describe.by(stats.desc, group = social, mat=TRUE)
+# frequency(social)
